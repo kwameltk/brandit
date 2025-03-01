@@ -39,62 +39,49 @@ navMenu.addEventListener('click', () => {
 
 //Contact-me form
 
-const sendBtn = document.querySelector('.send-btn');
-const contactName = document.querySelector('.c-name');
-const contactPhone = document.querySelector('.c-phone');
-const contactEmail = document.querySelector('.c-email');
-const messageName = document.querySelector('.f-name');
-const messagePhone = document.querySelector('.f-phone');
-const messageEmail = document.querySelector('.f-email');
-const messageSubmit = document.querySelector('.submit-feedback');
+/*const express = require('express');
+const nodemailer = require('nodemailer');
+const bodyParser = require('body-parser');
 
-function isEmail(mail) {
-    let patternEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (patternEmail.test(mail)) {
-        return true;
-    }
-    return false;
-}
+const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-function isName(name) {
-    let patternName = /^[a-zA-Z]+(\s[a-zA-Z]+)*$/;
-     if (patternName.test(name)) {
-        return true;
-    }
-    return false;
-}
+app.post('/send-email', (req, res) => {
+    const { fname, lname, contactEmail, contactPhone, comment } = req.body;
 
-function isPhoneNumber(number) {
-    let patternPhone = /^\d{9}$/;
-    if (patternPhone.test(number)) {
-        return true;
-    }
-    return false;
-}
+    const transporter = nodemailer.createTransport({
+        service: 'gmail', // or your email service
+        auth: {
+            user: 'your_gmail_username@gmail.com', // Replace with your email
+            pass: 'your_gmail_password' // Replace with your password or app password
+        }
+    });
 
-sendBtn.addEventListener('click', () => {
+    const mailOptions = {
+        from: 'your_gmail_username@gmail.com',
+        to: 'brandsclinic24@gmail.com',
+        subject: 'Contact Form Submission',
+        text: `
+            First Name: ${fname}
+            Last Name: ${lname}
+            Email: ${contactEmail}
+            Phone: ${contactPhone}
+            Message: ${comment}
+        `
+    };
 
-    if (!isName(contactName.value.trim())) {
-        messageName.style.display = 'block'
-    } else { 
-        messageName.style.display = 'none';
-    }
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log(error);
+            res.status(500).send('Error sending email');
+        } else {
+            console.log('Email sent: ' + info.response);
+            res.send('Email sent successfully');
+        }
+    });
+});
 
-    if (!isPhoneNumber(contactPhone.value.trim())) {
-        messagePhone.style.display = 'block'
-    } else { 
-        messagePhone.style.display = 'none';
-    }
-    
-    if (!isEmail(contactEmail.value.trim())) {
-        messageEmail.style.display = 'block'
-    } else { 
-        messageEmail.style.display = 'none';
-    } 
-
-    if (isName(contactName.value.trim()) && isPhoneNumber(contactPhone.value.trim()) && isEmail(contactEmail.value.trim())) {
-        messageSubmit.style.display = 'block'
-    } else { 
-        messageSubmit.style.display = 'none';
-    } 
+app.listen(3000, () => {
+    console.log('Server listening on port 3000');
 });
